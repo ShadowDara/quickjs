@@ -1,0 +1,9 @@
+build:
+    ECHO Building Quickjs on Windows
+    ENV CC=zig cc
+    # RUN zig cc -DCONFIG_VERSION=\"2025-01-01\" -DCONFIG_BIGNUM -DCONFIG_DISABLE_THREADS -DCONFIG_WIN32 cutils.c dtoa.c libregexp.c libunicode.c qjsc.c quickjs-libc.c quickjs.c -o qjsc.exe
+    # RUN ./qjsc.exe -c -o repl.c repl.js
+    RUN zig cc -DCONFIG_VERSION=\"2025-01-01\" -DCONFIG_BIGNUM -DCONFIG_DISABLE_THREADS -DCONFIG_WIN32 cutils.c dtoa.c libregexp.c libunicode.c qjs.c quickjs-libc.c quickjs.c -o qjs.exe
+
+b:
+    TASKWIN build

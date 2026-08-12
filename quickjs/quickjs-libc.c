@@ -69,7 +69,13 @@ typedef sig_t sighandler_t;
 #define USE_WORKER
 
 #ifdef USE_WORKER
-#include <pthread.h>
+
+#ifdef _WIN32
+    #include "pthread.h"
+#else
+    #include <pthread.h>
+#endif
+
 #include <stdatomic.h>
 #endif
 
