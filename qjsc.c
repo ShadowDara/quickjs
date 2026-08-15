@@ -27,7 +27,9 @@
 #include <inttypes.h>
 #include <string.h>
 #include <assert.h>
+#if !defined(_MSC_VER)
 #include <unistd.h>
+#endif
 #include <errno.h>
 #if !defined(_WIN32)
 #include <sys/wait.h>
@@ -35,6 +37,14 @@
 
 #include "cutils.h"
 #include "quickjs-libc.h"
+#if defined(_MSC_VER)
+#include "msvc_compat.h"
+/* qjsc.c implements its own lightweight option parsing (see
+   get_short_optarg() below) and reuses the well-known POSIX global
+   `optind` as its cursor into argv[], normally declared by
+   <unistd.h>. MSVC has no <unistd.h>, so declare it here instead. */
+static int optind;
+#endif
 
 typedef struct {
     char *name;

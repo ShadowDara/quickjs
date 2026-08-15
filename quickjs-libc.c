@@ -28,19 +28,40 @@
 #include <inttypes.h>
 #include <string.h>
 #include <assert.h>
+#if defined(_MSC_VER)
+/* Must be included before anything else that might pull in <windows.h>
+   (e.g. the _WIN32 block below): it sets WIN32_LEAN_AND_MEAN and
+   includes <winsock2.h> before <windows.h>, which is the only reliable
+   way to stop <windows.h> from auto-including the legacy <winsock.h>
+   and causing duplicate-definition errors against <winsock2.h> later. */
+#include "msvc_compat.h"
+#endif
+#if !defined(_MSC_VER)
 #include <unistd.h>
+#endif
 #include <errno.h>
 #include <fcntl.h>
+#if !defined(_MSC_VER)
 #include <sys/time.h>
+#endif
 #include <time.h>
 #include <signal.h>
 #include <limits.h>
 #include <sys/stat.h>
+#if !defined(_MSC_VER)
 #include <dirent.h>
+#endif
 #if defined(_WIN32)
 #include <windows.h>
 #include <conio.h>
+#if defined(_MSC_VER)
+/* MSVC's CRT ships this functionality under <sys/utime.h>; the plain
+   <utime.h> path is a MinGW-provided compatibility alias that MSVC
+   does not have. */
+#include <sys/utime.h>
+#else
 #include <utime.h>
+#endif
 #else
 #include <dlfcn.h>
 #include <termios.h>
@@ -65,8 +86,13 @@ typedef sig_t sighandler_t;
 
 #endif
 
-/* enable the os.Worker API. It relies on POSIX threads */
+/* enable the os.Worker API. It relies on POSIX threads, which MSVC does
+   not provide natively (no <pthread.h>), so it is disabled for MSVC
+   builds. GCC/Clang/MinGW builds (including MinGW-w64 targeting
+   Windows) are unaffected. */
+#if !defined(_MSC_VER)
 #define USE_WORKER
+#endif
 
 #ifdef USE_WORKER
 #include <pthread.h>
