@@ -114,13 +114,7 @@
 //#define FORCE_GC_AT_MALLOC
 
 #ifdef CONFIG_ATOMICS
-
-#ifdef _WIN32
-    #include "pthread.h"
-#else
-    #include <pthread.h>
-#endif
-
+#include <pthread.h>
 #include <stdatomic.h>
 #include <errno.h>
 #endif
